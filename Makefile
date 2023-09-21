@@ -20,3 +20,24 @@ deploy:
 	#deploy goes here
 		
 all: install lint test format deploy
+
+
+install:
+	pip install --upgrade pip &&\
+		pip install -r requirements.txt
+
+test:
+	python -m pytest -vv --cov=mylib test_*.py
+	python -m pytest --nbval *.ipynb
+
+format:
+	black *.py
+	nbqa black *.ipynb
+
+lint:
+	nbqa ruff *.ipynb
+	ruff check *.py
+
+refactor: format lint
+
+all: install lint test format refactor
